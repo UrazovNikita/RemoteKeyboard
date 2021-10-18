@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ksp
+namespace skp
 {
     [Serializable]
     public class SendKeyParams
@@ -12,7 +12,6 @@ namespace ksp
         }
         public ScanCodeShort key { get; private set; }
         public KEYEVENTF flag { get; private set; }
-
         public enum ScanCodeShort : short
         {
             LBUTTON = 0,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using skp;
 
 namespace WindowsServer
 {
@@ -24,8 +25,8 @@ namespace WindowsServer
                                ki = new KeySender.KEYBDINPUT
                                {
                                    wVk = 0,
-                                   wScan = sendKeyParams.key,
-                                   dwFlags = sendKeyParams.flag|KeySender.KEYEVENTF.SCANCODE,
+                                   wScan = (KeySender.ScanCodeShort)sendKeyParams.key,
+                                   dwFlags = (KeySender.KEYEVENTF)sendKeyParams.flag|KeySender.KEYEVENTF.SCANCODE,
                                    dwExtraInfo = KeySender.GetMessageExtraInfo(),
                                }
                            }
@@ -39,7 +40,7 @@ namespace WindowsServer
         /// </summary>
         /// <param name="key"></param>
         /// <param name="flag"></param>
-        public static void SendKey(KeySender.ScanCodeShort key, KeySender.KEYEVENTF flag)
+        public static void SendKey( SendKeyParams.ScanCodeShort key, SendKeyParams.KEYEVENTF flag)
         {
             KeySender.LPINPUT[] inputs = new KeySender.LPINPUT[]
             {
@@ -51,8 +52,8 @@ namespace WindowsServer
                                ki = new KeySender.KEYBDINPUT
                                {
                                    wVk = 0,
-                                   wScan = key,
-                                   dwFlags = flag|KeySender.KEYEVENTF.SCANCODE,
+                                   wScan = (KeySender.ScanCodeShort)key,
+                                   dwFlags = (KeySender.KEYEVENTF)flag|KeySender.KEYEVENTF.SCANCODE,
                                    dwExtraInfo = KeySender.GetMessageExtraInfo(),
                                }
                            }

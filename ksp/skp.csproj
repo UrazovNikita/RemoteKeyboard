@@ -7,8 +7,8 @@
     <ProjectGuid>{6F589597-F4D9-408C-851A-58F5680EED95}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ksp</RootNamespace>
-    <AssemblyName>ksp</AssemblyName>
+    <RootNamespace>skp</RootNamespace>
+    <AssemblyName>skp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ksp.cs" />
+    <Compile Include="skp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

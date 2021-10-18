@@ -10,6 +10,7 @@ using System.Net.NetworkInformation;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
 using System.Runtime.Serialization;
+using skp;
 
 namespace WindowsServer
 {
@@ -31,23 +32,7 @@ namespace WindowsServer
                 localIP = IPAddress.None;
             }
             return localIP;
-        }
-
-        public class CustomBinder : SerializationBinder
-        {
-            public override Type BindToType(string assemblyName, string typeName)
-            {
-                Assembly currentasm = Assembly.GetExecutingAssembly();
-                SendKeyParams[] sendKeyParams = new SendKeyParams[]
-                {
-                    new SendKeyParams(KeySender.ScanCodeShort.KEY_A, KeySender.KEYEVENTF.KEYDOWN),
-                };
-
-                //Type type = Type.GetType($"{"WindowsServer"}.{typeName.Split('.')[1]}");
-                Type type = sendKeyParams.GetType();
-                return type;
-            }
-        }
+        }        
 
         public static readonly int port = 16371;
         public async static void StartWork()
@@ -62,13 +47,13 @@ namespace WindowsServer
                 BinaryFormatter formatter = new BinaryFormatter();
 
                 SendKeyParams[] gotArray;
-                formatter.Binder = new CustomBinder();
+                
                 {
                     while (stream.CanRead)
                     {
                         //stream.ReadTimeout = 10;
 
-                        gotArray = (SendKeyParams[])formatter.Deserialize(stream) /*as SendKeyParams[]*/;
+                        gotArray = (SendKeyParams[])formatter.Deserialize(stream);
                         KeySenderMethods.SendKeysArray(gotArray);
                     }
                 }
