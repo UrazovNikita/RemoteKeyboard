@@ -32,38 +32,57 @@ namespace WindowsServer
                 localIP = IPAddress.None;
             }
             return localIP;
-        }        
+        }
 
         public static readonly int port = 16371;
+        private static CancellationTokenSource _tokenSource;
+        private static TcpListener _tcpServer;
+        private static TcpClient _client;
+        private static NetworkStream _stream;
+        private static SendKeyParams[] _recievedStreamArray;
         public async static void StartWork()
         {
-            IPAddress localAddr =/* IPAddress.Loopback;*/ GetLocalIp();
-            TcpListener tcpServer = new TcpListener(localAddr, port);
-            tcpServer.Start();
-            while (true)
+            _tokenSource = new CancellationTokenSource();
+            CancellationToken cancelToken = _tokenSource.Token;
+            IPAddress localAddr = GetLocalIp();
+            _tcpServer = new TcpListener(localAddr, port);
+            try
             {
-                TcpClient client = tcpServer.AcceptTcpClient();
-                NetworkStream stream = client.GetStream();
-                BinaryFormatter formatter = new BinaryFormatter();
-
-                SendKeyParams[] gotArray;
-                
+                await Task.Run(() =>
                 {
-                    while (stream.CanRead)
+                    _tcpServer.Start();
+                    while (true)
                     {
-                        //stream.ReadTimeout = 10;
-
-                        gotArray = (SendKeyParams[])formatter.Deserialize(stream);
-                        KeySenderMethods.SendKeysArray(gotArray);
+                        _client = _tcpServer.AcceptTcpClient();
+                        _stream = _client.GetStream();
+                        BinaryFormatter formatter = new BinaryFormatter();                        
+                        {
+                            while (_stream.CanRead)
+                            {
+                                _stream.ReadTimeout = 1;
+                                _recievedStreamArray = (SendKeyParams[])formatter.Deserialize(_stream);
+                                KeySenderMethods.SendKeysArray(_recievedStreamArray);
+                            }
+                        }
                     }
-                }
-                //StopWork(stream, client, gotArray);
+                });
+            }
+            catch
+            {
+
             }           
-        }     
-        public static void StopWork(NetworkStream stream, TcpClient client, SendKeyParams[] sendKeysUp)
+        }    
+       
+        public static void StopWork(TcpListener tcpServer, TcpClient client, NetworkStream stream, SendKeyParams[] recievedStreamArray)
         {
             stream.Close();
             client.Close();
+            tcpServer.Stop();
+            for(int i=0; i<recievedStreamArray.Length; i++)
+            {
+                recievedStreamArray[i].flag = SendKeyParams.KEYEVENTF.KEYUP;
+            }
+            KeySenderMethods.SendKeysArray(recievedStreamArray);
         }
            
     }

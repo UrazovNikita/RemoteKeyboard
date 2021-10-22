@@ -11,7 +11,7 @@ namespace skp
             flag = inputFlag;
         }
         public ScanCodeShort key { get; private set; }
-        public KEYEVENTF flag { get; private set; }
+        public KEYEVENTF flag { get; set; }
         public enum ScanCodeShort : short
         {
             LBUTTON = 0,

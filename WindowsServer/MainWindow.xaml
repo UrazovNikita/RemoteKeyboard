@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="420" Width="640" ResizeMode="NoResize" Background="Black">
     <Grid x:Name="GridMain" HorizontalAlignment="Left" Height="387" VerticalAlignment="Top" Width="630" RenderTransformOrigin="0.508,0.491">
-        <Button x:Name="ServerStart" Content="Button" HorizontalAlignment="Left" Margin="85,225,0,0" VerticalAlignment="Top" Width="140" Height="65" Background="Black" BorderBrush="#FFF77E1B" Foreground="#FFF77E1B" RenderTransformOrigin="0.5,0.5" Click="ServerStart_Click">
+        <Button x:Name="ServerStart" Content="Button" HorizontalAlignment="Left" Margin="10,225,0,0" VerticalAlignment="Top" Width="105" Height="40" Background="Black" BorderBrush="#FFF77E1B" Foreground="#FFF77E1B" RenderTransformOrigin="0.5,0.5" Click="ServerStart_Click">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleY="1" ScaleX="1"/>
@@ -17,7 +17,6 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Label x:Name="Info" Content="Label" HorizontalAlignment="Left" Margin="85,65,0,0" VerticalAlignment="Top" Height="115" Width="245" Foreground="AliceBlue"/>       
     </Grid>
 </Window>
     

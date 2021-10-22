@@ -40,7 +40,7 @@ namespace WindowsServer
         /// </summary>
         /// <param name="key"></param>
         /// <param name="flag"></param>
-        public static void SendKey( SendKeyParams.ScanCodeShort key, SendKeyParams.KEYEVENTF flag)
+        public static void SendKey(SendKeyParams.ScanCodeShort key, SendKeyParams.KEYEVENTF flag)
         {
             KeySender.LPINPUT[] inputs = new KeySender.LPINPUT[]
             {

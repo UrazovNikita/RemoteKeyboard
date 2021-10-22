@@ -25,9 +25,6 @@ namespace WindowsServer
     /// </summary>
     public partial class MainWindow : Window
     {
-       
-
-
         public MainWindow()
         {
             //IPAddress ipAdress;
@@ -42,15 +39,12 @@ namespace WindowsServer
             InitializeComponent();
         }
 
-
-
-
-        private void ServerStart_Click(object sender, RoutedEventArgs e)
+        private void _buttonServerStart_Click(object sender, RoutedEventArgs e)
         {
-            Task server = new Task(Server.StartWork);
-            server.Start();
-
+            Server.StartWork();
         }
+
+
     }
 }
 
