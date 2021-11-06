@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-using System.Net.NetworkInformation;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Reflection;
-using System.Runtime.Serialization;
 using skp;
 
 namespace WindowsServer
@@ -34,59 +28,103 @@ namespace WindowsServer
             return localIP;
         }
 
+        private class ExceptionClientUnconnected : Exception
+        {
+            public ExceptionClientUnconnected(string message)
+                : base(message)
+            { }
+        }
+
         public static readonly int port = 16371;
-        private static CancellationTokenSource _tokenSource;
         private static TcpListener _tcpServer;
         private static TcpClient _client;
         private static NetworkStream _stream;
         private static SendKeyParams[] _recievedStreamArray;
-        public async static void StartWork()
+        private static CancellationTokenSource _tokenSource;
+        public static bool IsWorked { get; private set; } = false;
+        public static async void StartWork()
         {
+            IsWorked = true;
             _tokenSource = new CancellationTokenSource();
             CancellationToken cancelToken = _tokenSource.Token;
+
             IPAddress localAddr = GetLocalIp();
             _tcpServer = new TcpListener(localAddr, port);
-            try
+            await Task.Run(() =>
             {
-                await Task.Run(() =>
+                try
                 {
                     _tcpServer.Start();
-                    while (true)
+                    _client = _tcpServer.AcceptTcpClient();
+                    _stream = _client.GetStream();
+
+                    BinaryFormatter formatter = new BinaryFormatter();
+
+                    while (_stream.CanRead)
                     {
-                        _client = _tcpServer.AcceptTcpClient();
-                        _stream = _client.GetStream();
-                        BinaryFormatter formatter = new BinaryFormatter();                        
+
+                        if (_stream.DataAvailable)
                         {
-                            while (_stream.CanRead)
+                            if (_client.Connected)
                             {
-                                _stream.ReadTimeout = 1;
                                 _recievedStreamArray = (SendKeyParams[])formatter.Deserialize(_stream);
                                 KeySenderMethods.SendKeysArray(_recievedStreamArray);
+                                cancelToken.ThrowIfCancellationRequested();
+                            }
+                            else
+                            {
+                                throw new ExceptionClientUnconnected("not connected");
                             }
                         }
-                    }
-                });
-            }
-            catch
-            {
+                        else
+                        {
+                            continue;
+                        }
 
-            }           
-        }    
-       
-        public static void StopWork(TcpListener tcpServer, TcpClient client, NetworkStream stream, SendKeyParams[] recievedStreamArray)
-        {
-            stream.Close();
-            client.Close();
-            tcpServer.Stop();
-            for(int i=0; i<recievedStreamArray.Length; i++)
-            {
-                recievedStreamArray[i].flag = SendKeyParams.KEYEVENTF.KEYUP;
-            }
-            KeySenderMethods.SendKeysArray(recievedStreamArray);
+                    }
+                }
+                catch (ExceptionClientUnconnected ex)
+                {
+                    StopWork();
+                }
+            });
+
         }
-           
+
+        public static void StopWork()
+        {
+            IsWorked = false;
+            try
+            {
+                if (_stream != null)
+                {
+                    _stream.Close();
+                }
+                if (_client != null)
+                {
+                    _client.Close();
+                }
+                if (_tcpServer != null)
+                {
+                    _tcpServer.Stop();
+                }
+                if (_recievedStreamArray != null)
+                {
+                    for (int i = 0; i < _recievedStreamArray.Length; i++)
+                    {
+                        _recievedStreamArray[i].flag = SendKeyParams.KEYEVENTF.KEYUP;
+                    }
+                    KeySenderMethods.SendKeysArray(_recievedStreamArray);
+                }
+            }
+            finally
+            {
+                if (_tokenSource != null)
+                {
+                    _tokenSource.Cancel();
+                }
+            }
+        }
+
     }
 }
-
-
-    
