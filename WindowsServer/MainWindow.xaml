@@ -7,9 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="315" Width="640" ResizeMode="NoResize" Background="{StaticResource BackgroundBrush}">
     <Grid x:Name="GridMain" RenderTransformOrigin="0.508,0.491" Margin="0,0,3.6,-0.4">
-        <Button x:Name="ButtonServerStart" Content="Start" HorizontalAlignment="Left" Margin="70,200,0,0" VerticalAlignment="Top" Click="_buttonServerStart_Click"/>
+       <!-- 
+        <Button x:Name="ButtonServerStart" Content="Start" HorizontalAlignment="Left" Margin="70,200,0,0" VerticalAlignment="Top" Command="{Binding }"/>
         <Button x:Name="ButtonCancel" Content="Stop" IsEnabled="False" HorizontalAlignment="Left" Margin="270,200,0,0" VerticalAlignment="Top" Click="_buttonCancle_Click"/>
-        <Button x:Name="ButtonMinimize" Content="To tray" HorizontalAlignment="Left" Margin="470,200,0,0" VerticalAlignment="Top" Click="_buttonToTray_Click"/>
+        <Button x:Name="ButtonMinimize" Content="To tray" HorizontalAlignment="Left" Margin="470,200,0,0" VerticalAlignment="Top" Click="_buttonToTray_Click"/> 
+        -->
     </Grid>
 </Window>
     

@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace WindowsServer
+namespace InputSender
 {
-   public partial class KeySender ///Below defined imported function "SendInput" from "user32.dll" and input structs
+    public class InputSender ///Below defined imported function "SendInput" from "user32.dll" and input structs
     {
         /// <summary>
         /// Declaration of external SendInput method
         /// </summary>
         [DllImport("user32.dll")]
-        internal static extern uint SendInput(
+        public static extern uint SendInput(
             uint nInputs,
             LPINPUT[] pInputs,
             int cbSize);
-       
+
         [DllImport("user32.dll")]
         public static extern UIntPtr GetMessageExtraInfo();
 
@@ -34,21 +30,21 @@ namespace WindowsServer
         }
         public enum InputType : byte
         {
-            INPUT_MOUSE=0,
+            INPUT_MOUSE = 0,
             INPUT_KEYBOARD,
             INPUT_HARDWARE
-        }      
+        }
 
         // Declare the InputUnion struct
         [StructLayout(LayoutKind.Explicit)]
         public struct InputUnion
         {
             [FieldOffset(0)]
-            internal MOUSEINPUT mi;
+            public MOUSEINPUT mi;
             [FieldOffset(0)]
-            internal KEYBDINPUT ki;
+            public KEYBDINPUT ki;
             [FieldOffset(0)]
-            internal HARDWAREINPUT hi;
+            public HARDWAREINPUT hi;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -92,11 +88,11 @@ namespace WindowsServer
         [StructLayout(LayoutKind.Sequential)]
         public struct KEYBDINPUT
         {
-            internal VirtualKeyShort wVk;
-            internal ScanCodeShort wScan;
-            internal KEYEVENTF dwFlags;
-            internal int time;
-            internal UIntPtr dwExtraInfo;
+            public VirtualKeyShort wVk;
+            public ScanCodeShort wScan;
+            public KEYEVENTF dwFlags;
+            public int time;
+            public UIntPtr dwExtraInfo;
         }
 
         [Flags]

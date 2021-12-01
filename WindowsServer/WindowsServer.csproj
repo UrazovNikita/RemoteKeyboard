@@ -38,9 +38,6 @@
     <ApplicationIcon>key1.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="skp">
-      <HintPath>..\ksp\bin\Debug\skp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -63,7 +60,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ButtonCommand.cs" />
+    <Compile Include="SendKeyParams.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ViewModel.cs" />
     <Page Include="DictionaryButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -76,8 +76,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="KeySender.cs" />
-    <Compile Include="KeySenderMethods.cs" />
+    <Compile Include="InputSenderMethods.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -108,6 +107,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="key1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ksp\InputSender.csproj">
+      <Project>{6f589597-f4d9-408c-851a-58f5680eed95}</Project>
+      <Name>InputSender</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

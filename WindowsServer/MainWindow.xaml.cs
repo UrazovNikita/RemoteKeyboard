@@ -16,7 +16,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
-using skp;
+
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -42,6 +42,8 @@ namespace WindowsServer
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new ViewModel();
+
             notifyIcon.Icon = new Icon("key1.ico");
             menu = getMenu();
         }
@@ -55,19 +57,7 @@ namespace WindowsServer
             menu.Items.Add(mnuexit);
             return menu;
 
-        }
-
-
-        private void _buttonServerStart_Click(object sender, RoutedEventArgs e)
-        {
-            Server.StartWork();
-        }
-
-        private void _buttonCancle_Click(object sender, RoutedEventArgs e)
-        {
-            Server.StopWork();
-
-        }
+        }    
 
         private void _buttonToTray_Click(object sender, RoutedEventArgs e)
         {

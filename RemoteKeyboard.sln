@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsServer", "WindowsServer\WindowsServer.csproj", "{49AD5786-7F04-40BB-81F5-A0BC635E6881}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "skp", "ksp\skp.csproj", "{6F589597-F4D9-408C-851A-58F5680EED95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputSender", "ksp\InputSender.csproj", "{6F589597-F4D9-408C-851A-58F5680EED95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileClient.Android", "MobileClient\MobileClient.Android\MobileClient.Android.csproj", "{CA866C14-9C9E-473F-8F95-003012AC9B7D}"
 EndProject

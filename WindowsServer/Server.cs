@@ -4,12 +4,31 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
-using skp;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace WindowsServer
 {
-    public static class Server
+    public class Server : IDisposable
     {
+
+        private static Server _instance;      
+        public static Server GetInstance()
+        {
+            if (_instance == null)
+                _instance = new Server();
+            return _instance;
+        }
+        private Server() { }
+
+        public void Dispose()
+        {
+            if (_instance != null)
+            {
+                _instance.Dispose();
+            }
+        }
+
         public static IPAddress GetLocalIp()
         {
             IPAddress localIP;
@@ -28,9 +47,9 @@ namespace WindowsServer
             return localIP;
         }
 
-        private class ExceptionClientUnconnected : Exception
+        private class ExceptionClientDisconnected : Exception
         {
-            public ExceptionClientUnconnected(string message)
+            public ExceptionClientDisconnected(string message)
                 : base(message)
             { }
         }
@@ -41,10 +60,17 @@ namespace WindowsServer
         private static NetworkStream _stream;
         private static SendKeyParams[] _recievedStreamArray;
         private static CancellationTokenSource _tokenSource;
-        public static bool IsWorked { get; private set; } = false;
-        public static async void StartWork()
+        private static InputSenderMethods _input = new InputSenderMethods();
+
+        //public static bool AskConnection()
+        //{
+        //    _stream.Write()
+        //}
+
+        public bool IsWork { get; private set; } = false;
+        public async void StartWork()
         {
-            IsWorked = true;
+            IsWork = true;
             _tokenSource = new CancellationTokenSource();
             CancellationToken cancelToken = _tokenSource.Token;
 
@@ -68,22 +94,21 @@ namespace WindowsServer
                             if (_client.Connected)
                             {
                                 _recievedStreamArray = (SendKeyParams[])formatter.Deserialize(_stream);
-                                KeySenderMethods.SendKeysArray(_recievedStreamArray);
+                                _input.SendRecievedArray(_recievedStreamArray);
                                 cancelToken.ThrowIfCancellationRequested();
                             }
                             else
                             {
-                                throw new ExceptionClientUnconnected("not connected");
+                                throw new ExceptionClientDisconnected("not connected");
                             }
                         }
                         else
                         {
                             continue;
                         }
-
                     }
                 }
-                catch (ExceptionClientUnconnected ex)
+                catch (ExceptionClientDisconnected ex)
                 {
                     StopWork();
                 }
@@ -91,40 +116,38 @@ namespace WindowsServer
 
         }
 
-        public static void StopWork()
+        public void StopWork()
         {
-            IsWorked = false;
-            try
+            IsWork = false;
+
+            if (_tcpServer != null)
             {
-                if (_stream != null)
-                {
-                    _stream.Close();
-                }
                 if (_client != null)
                 {
+                    if (_stream != null)
+                    {
+                        _stream.Close();
+                    }
                     _client.Close();
                 }
-                if (_tcpServer != null)
-                {
-                    _tcpServer.Stop();
-                }
-                if (_recievedStreamArray != null)
-                {
-                    for (int i = 0; i < _recievedStreamArray.Length; i++)
-                    {
-                        _recievedStreamArray[i].flag = SendKeyParams.KEYEVENTF.KEYUP;
-                    }
-                    KeySenderMethods.SendKeysArray(_recievedStreamArray);
-                }
+                _tcpServer.Stop();
             }
-            finally
+
+            if (_recievedStreamArray != null)
             {
-                if (_tokenSource != null)
+                for (int i = 0; i < _recievedStreamArray.Length; i++)
                 {
-                    _tokenSource.Cancel();
+                    _recievedStreamArray[i].flag = InputSender.InputSender.KEYEVENTF.KEYUP;
                 }
+                _input.SendRecievedArray(_recievedStreamArray);
+            }
+
+            if (_tokenSource != null)
+            {
+                _tokenSource.Cancel();
             }
         }
-
     }
+
 }
+
