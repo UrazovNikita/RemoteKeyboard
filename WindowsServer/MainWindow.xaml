@@ -3,15 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WindowsServer"
+        xmlns:local="clr-namespace:WindowsServer" d:DataContext="{d:DesignInstance Type=local:ViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="315" Width="640" ResizeMode="NoResize" Background="{StaticResource BackgroundBrush}">
     <Grid x:Name="GridMain" RenderTransformOrigin="0.508,0.491" Margin="0,0,3.6,-0.4">
-       <!-- 
-        <Button x:Name="ButtonServerStart" Content="Start" HorizontalAlignment="Left" Margin="70,200,0,0" VerticalAlignment="Top" Command="{Binding }"/>
-        <Button x:Name="ButtonCancel" Content="Stop" IsEnabled="False" HorizontalAlignment="Left" Margin="270,200,0,0" VerticalAlignment="Top" Click="_buttonCancle_Click"/>
-        <Button x:Name="ButtonMinimize" Content="To tray" HorizontalAlignment="Left" Margin="470,200,0,0" VerticalAlignment="Top" Click="_buttonToTray_Click"/> 
-        -->
+        
+        <Button x:Name="ButtonServerStart" Content="Start" HorizontalAlignment="Left" Margin="70,200,0,0" VerticalAlignment="Top" Command="{Binding StartCommand}"/>
+        <Button x:Name="ButtonCancel" Content="Stop" IsEnabled="False" HorizontalAlignment="Left" Margin="270,200,0,0" VerticalAlignment="Top" Command="{Binding StopCommand}"/>
+        <!--<Button x:Name="ButtonMinimize" Content="To tray" HorizontalAlignment="Left" Margin="470,200,0,0" VerticalAlignment="Top" Click="_buttonToTray_Click"/>--> 
+        
     </Grid>
 </Window>
     

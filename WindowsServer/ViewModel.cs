@@ -14,50 +14,44 @@ namespace WindowsServer
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        Server server;
-        private ButtonCommand startCommand;
+
+        private Server _server;
+        private ButtonCommand _startCommand;
         public ButtonCommand StartCommand
         {
             get
             {
-                return startCommand ??
-                  (startCommand = new ButtonCommand(obj =>
+                return _startCommand ??
+                  (_startCommand = new ButtonCommand(obj =>
                   {
-                      server=Server.GetInstance();
-                      server.StartWork();
+                      if (_server == null)
+                      {
+                          _server = Server.GetInstance();
+                          _server.StartWork();
+                      }
+                     
                   }));
-            }           
+            }
         }
 
-        private ButtonCommand stopCommand;
+        private ButtonCommand _stopCommand;
         public ButtonCommand StopCommand
         {
             get
             {
-                return stopCommand ??
-                  (stopCommand = new ButtonCommand(obj =>
+                return _stopCommand ??
+                  (_stopCommand = new ButtonCommand(obj =>
                   {
-                      server.StopWork();
-                      server.Dispose();                      
+                      _server.StopWork();
+                      _server.Dispose();
                   }));
-            }            
+            }
         }
-
-        //public Phone SelectedPhone
-        //{
-        //    get { return selectedPhone; }
-        //    set
-        //    {
-        //        selectedPhone = value;
-        //        OnPropertyChanged("SelectedPhone");
-        //    }
-        //}       
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }

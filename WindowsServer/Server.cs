@@ -11,16 +11,16 @@ namespace WindowsServer
 {
     public class Server : IDisposable
     {
-
-        private static Server _instance;      
+        private static Server _instance;
+        private Server() {  }
         public static Server GetInstance()
         {
             if (_instance == null)
+            {
                 _instance = new Server();
+            }
             return _instance;
         }
-        private Server() { }
-
         public void Dispose()
         {
             if (_instance != null)
@@ -28,7 +28,6 @@ namespace WindowsServer
                 _instance.Dispose();
             }
         }
-
         public static IPAddress GetLocalIp()
         {
             IPAddress localIP;
@@ -46,6 +45,10 @@ namespace WindowsServer
             }
             return localIP;
         }
+        public int GetPort()
+        {
+            return _port;
+        }
 
         private class ExceptionClientDisconnected : Exception
         {
@@ -54,13 +57,13 @@ namespace WindowsServer
             { }
         }
 
-        public static readonly int port = 16371;
-        private static TcpListener _tcpServer;
-        private static TcpClient _client;
-        private static NetworkStream _stream;
-        private static SendKeyParams[] _recievedStreamArray;
-        private static CancellationTokenSource _tokenSource;
-        private static InputSenderMethods _input = new InputSenderMethods();
+        private int _port = 16371;
+        private TcpListener _tcpServer;
+        private TcpClient _client;
+        private NetworkStream _stream;
+        private SendKeyParams[] _recievedStreamArray;
+        private CancellationTokenSource _tokenSource;
+        private InputSenderMethods _input = new InputSenderMethods();
 
         //public static bool AskConnection()
         //{
@@ -71,28 +74,27 @@ namespace WindowsServer
         public async void StartWork()
         {
             IsWork = true;
+
             _tokenSource = new CancellationTokenSource();
             CancellationToken cancelToken = _tokenSource.Token;
 
             IPAddress localAddr = GetLocalIp();
-            _tcpServer = new TcpListener(localAddr, port);
+            _tcpServer = new TcpListener(localAddr, _port);
             await Task.Run(() =>
             {
                 try
                 {
                     _tcpServer.Start();
                     _client = _tcpServer.AcceptTcpClient();
-                    _stream = _client.GetStream();
-
-                    BinaryFormatter formatter = new BinaryFormatter();
+                    _stream = _client.GetStream();                    
 
                     while (_stream.CanRead)
                     {
-
                         if (_stream.DataAvailable)
                         {
                             if (_client.Connected)
                             {
+                                BinaryFormatter formatter = new BinaryFormatter();
                                 _recievedStreamArray = (SendKeyParams[])formatter.Deserialize(_stream);
                                 _input.SendRecievedArray(_recievedStreamArray);
                                 cancelToken.ThrowIfCancellationRequested();
@@ -113,7 +115,6 @@ namespace WindowsServer
                     StopWork();
                 }
             });
-
         }
 
         public void StopWork()
